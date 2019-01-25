@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph"
+            app:startDestination="@id/splashFragment">
+    <fragment android:id="@+id/mapFragment" android:name="com.dev.android.railian.weathermap.view.MapFragment"
+              android:label="fragment_map" tools:layout="@layout/fragment_map">
+        <action android:id="@+id/action_mapFragment_to_favoritesFragment" app:destination="@id/favoritesFragment"/>
+        <action android:id="@+id/action_mapFragment_to_settingsFragment" app:destination="@id/settingsFragment"/>
+    </fragment>
+    <fragment android:id="@+id/favoritesFragment" android:name="com.dev.android.railian.weathermap.view.FavoritesFragment"
+              android:label="fragment_favorites" tools:layout="@layout/fragment_favorites">
+        <action android:id="@+id/action_favoritesFragment_to_settingsFragment" app:destination="@id/settingsFragment"/>
+    </fragment>
+    <fragment android:id="@+id/settingsFragment" android:name="com.dev.android.railian.weathermap.view.SettingsFragment"
+              android:label="fragment_settings" tools:layout="@layout/fragment_settings"/>
+    <fragment android:id="@+id/splashFragment" android:name="com.dev.android.railian.weathermap.view.SplashFragment"
+              android:label="fragment_splash" tools:layout="@layout/fragment_splash">
+        <action android:id="@+id/action_splashFragment_to_mapFragment" app:destination="@id/mapFragment"/>
+    </fragment>
+</navigation>
