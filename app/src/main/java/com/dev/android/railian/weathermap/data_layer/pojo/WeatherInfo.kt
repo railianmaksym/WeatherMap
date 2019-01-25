@@ -37,7 +37,7 @@ data class WeatherInfo(
         @SerializedName("humidity")
         val humidityPercent: Int = 0,
         @SerializedName("pressure")
-        val pressure: Int = 0,
+        val pressure: Double = 0.0,
         @SerializedName("temp")
         val temp: Double = 0.0,
         @SerializedName("temp_max")
@@ -55,7 +55,7 @@ data class WeatherInfo(
 
     data class Rain(
         @SerializedName("3h")
-        val lastThreeHoursRainStrength: Int = 0
+        val lastThreeHoursRainStrength: Double = 0.0
     )
 
     data class Weather(
@@ -71,9 +71,9 @@ data class WeatherInfo(
 
     data class Coord(
         @SerializedName("lat")
-        val latitude: Int = 0,
+        val latitude: Double = 0.0,
         @SerializedName("lon")
-        val longitude: Int = 0
+        val longitude: Double = 0.0
     )
 
     data class Clouds(

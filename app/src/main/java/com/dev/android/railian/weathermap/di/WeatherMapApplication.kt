@@ -1,27 +1,12 @@
 package com.dev.android.railian.weathermap.di
 
 import android.app.Application
+import org.koin.android.ext.android.startKoin
 
 class WeatherMapApplication : Application() {
 
-    private lateinit var appComponent: AppComponent
     override fun onCreate() {
         super.onCreate()
-
-        appComponent = DaggerAppComponent
-            .builder()
-            .androidModule(AndroidModule(this))
-            .networkModule(NetworkModule(this))
-
-            .build()
+        startKoin(this, listOf(NetworkModule.instance, MapFragmentModule.instance))
     }
-
-    companion object {
-        private lateinit var appComponent: AppComponent
-        @JvmStatic
-        fun appComponent(): AppComponent {
-            return appComponent
-        }
-    }
-
 }

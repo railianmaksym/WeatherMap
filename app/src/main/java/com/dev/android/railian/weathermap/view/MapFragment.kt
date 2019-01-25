@@ -1,58 +1,41 @@
 package com.dev.android.railian.weathermap.view
 
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import com.dev.android.railian.weathermap.data_layer.pojo.WeatherInfo
+import com.dev.android.railian.weathermap.util.Constants
+import com.dev.android.railian.weathermap.view_model.MapFragmentViewModel
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import android.content.Context.INPUT_METHOD_SERVICE
-import android.view.inputmethod.InputMethodManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import com.dev.android.railian.weathermap.R
-import com.dev.android.railian.weathermap.data_layer.pojo.WeatherInfo
-import com.dev.android.railian.weathermap.di.WeatherMapApplication
-import com.dev.android.railian.weathermap.di.mapFragment.MapFragmentModule
-import com.dev.android.railian.weathermap.di.viewModelInjection.ViewModelFactory
-import com.dev.android.railian.weathermap.util.Constants
-import com.dev.android.railian.weathermap.view_model.MapFragmentViewModel
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import kotlinx.android.synthetic.main.bottom_sheet.*
-import javax.inject.Inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.dev.android.railian.weathermap.R
 
 
 class MapFragment : Fragment(), GoogleMap.OnMapClickListener {
-    @Inject
-    protected lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var viewModel: MapFragmentViewModel
+    private val viewModel: MapFragmentViewModel by viewModel()
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var googleMap: GoogleMap
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MapFragmentViewModel::class.java)
         return inflater.inflate(R.layout.fragment_map, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        WeatherMapApplication
-            .appComponent()
-            .mapComponentBuilder()
-            .mapFragmentModule(MapFragmentModule())
-            .build()
-            .inject(this@MapFragment)
-
         bottomSheetBehavior = BottomSheetBehavior.from<LinearLayout>(bottomSheet)
         bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -63,7 +46,7 @@ class MapFragment : Fragment(), GoogleMap.OnMapClickListener {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
 
-        val mapFragment = activity?.supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync {
             it.setOnMapClickListener(this)
         }
@@ -80,13 +63,14 @@ class MapFragment : Fragment(), GoogleMap.OnMapClickListener {
         } else {
             locationText.text = "${weatherInfo.name} ${weatherInfo.sys.countryCode}"
             generalWeatherText.text = weatherInfo.weather[0].description
-            temperatureText.text = "${weatherInfo.main.temp} C"
+            temperatureText.text = "${Math.round(weatherInfo.main.temp)} C"
             windText.text = "${getWindDirection(weatherInfo.wind.deg)} ${Math.round(weatherInfo.wind.speed)} m/s"
+            setWeatherCardState(weatherInfo.weather[0])
         }
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    fun getWindDirection(degrees: Double): String {
+    private fun getWindDirection(degrees: Double): String {
         return when (degrees) {
             in 340.0..20.0 -> Constants.WindDirections.NORD.displayString
             in 21.0..80.0 -> Constants.WindDirections.NORDEAST.displayString
@@ -99,15 +83,93 @@ class MapFragment : Fragment(), GoogleMap.OnMapClickListener {
         }
     }
 
-    override fun onMapClick(coordinates: LatLng) {
-        val view = activity!!.currentFocus
-        if (view != null) {
-            (activity?.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager)?.hideSoftInputFromWindow(
-                view.windowToken,
-                0
-            )
-            viewModel.getWeatherByCoordinates(coordinates)
+    fun setWeatherCardState(weather: WeatherInfo.Weather) {
+        if (weather.icon.isEmpty()) {
+            weatherImage.setImageDrawable(resources.getDrawable(R.drawable.weather_none_available))
+        } else {
+            when {
+                weather.description.contains("clear") -> {
+                    decorateWeatherCard(
+                        resources.getDrawable(R.drawable.weather_clear),
+                        R.color.sunnyBackground,
+                        R.color.white
+                    )
+                }
+                weather.description.contains("few") -> {
+                    decorateWeatherCard(
+                        resources.getDrawable(R.drawable.weather_few_clouds),
+                        R.color.sunnyBackground,
+                        R.color.white
+                    )
+                }
+                !weather.description.contains("few")
+                        && weather.description.contains("clouds") -> {
+                    decorateWeatherCard(
+                        resources.getDrawable(R.drawable.weather_clouds),
+                        R.color.rainBackground,
+                        R.color.white
+                    )
+                }
+                weather.description.contains("rain")
+                        && weather.description.contains("snow") -> {
+                    decorateWeatherCard(
+                        resources.getDrawable(R.drawable.weather_snow_rain),
+                        R.color.snowBackground,
+                        R.color.primary_text
+                    )
+                }
+                weather.description.contains("rain")
+                        && !weather.description.contains("snow") -> {
+                    decorateWeatherCard(
+                        resources.getDrawable(R.drawable.weather_rain_day),
+                        R.color.rainBackground,
+                        R.color.white
+                    )
+                }
+                weather.description.contains("storm") -> {
+                    decorateWeatherCard(
+                        resources.getDrawable(R.drawable.weather_storm),
+                        R.color.snowBackground,
+                        R.color.primary_text
+                    )
+                }
+                !weather.description.contains("rain")
+                        && weather.description.contains("snow") -> {
+                    decorateWeatherCard(
+                        resources.getDrawable(R.drawable.weather_snow),
+                        R.color.snowBackground,
+                        R.color.primary_text
+                    )
+                }
+                weather.description.contains("mist") -> {
+                    decorateWeatherCard(
+                        resources.getDrawable(R.drawable.weather_mist),
+                        R.color.snowBackground,
+                        R.color.primary_text
+                    )
+                }
+                else -> {
+                    decorateWeatherCard(
+                        resources.getDrawable(R.drawable.weather_clouds),
+                        R.color.rainBackground,
+                        R.color.white
+                    )
+                }
+            }
         }
+    }
+
+    private fun decorateWeatherCard(weatherDrawable: Drawable, colorBack: Int, colorFont: Int) {
+        weatherImage.setImageDrawable(weatherDrawable)
+        weatherCard.setBackgroundColor(resources.getColor(colorBack))
+        generalWeatherText.setTextColor(resources.getColor(colorFont))
+        locationText.setTextColor(resources.getColor(colorFont))
+        temperatureText.setTextColor(resources.getColor(colorFont))
+        windText.setTextColor(resources.getColor(colorFont))
+    }
+
+    override fun onMapClick(coordinates: LatLng) {
+        viewModel.getWeatherByCoordinates(coordinates)
     }
 
 }

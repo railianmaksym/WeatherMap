@@ -13,12 +13,12 @@ interface WeatherApi {
         @Query("lon") lon: String,
         @Query("units") units: String,
         @Query("appid") appid: String
-    ):  Deferred<LiveData<WeatherInfo>>
+    ):  Deferred<WeatherInfo>
 
     @GET("/data/2.5/weather")
     fun getWeatherByCityNameAsync(
         @Query("q") q: String,
         @Query("units") units: String,
         @Query("appid") appid: String
-    ): Deferred<LiveData<WeatherInfo>>
+    ): Deferred<WeatherInfo>
 }

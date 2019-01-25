@@ -9,24 +9,21 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class MapFragmentViewModel @Inject constructor(
-    protected val repository: MapsFragmentRepository
-) : ViewModel() {
-    private var weatherInfo: LiveData<WeatherInfo> = MutableLiveData<WeatherInfo>()
+class MapFragmentViewModel(private val repository: MapsFragmentRepository) : ViewModel() {
+    private var weatherInfo: MutableLiveData<WeatherInfo> = MutableLiveData()
 
     fun getWeatherByCoordinates(coordinates: LatLng) {
         GlobalScope.launch(Dispatchers.Main) {
-            weatherInfo = repository.getWeatherByCoordinates(coordinates)
+            weatherInfo.value = repository.getWeatherByCoordinates(coordinates)
         }
     }
 
-    fun getWeatherByCityName(name: String) {
+   /* fun getWeatherByCityName(name: String) {
         GlobalScope.launch(Dispatchers.Main) {
             weatherInfo = repository.getWeatherByCityName(name)
         }
-    }
+    }*/
 
     fun weatherInfo(): LiveData<WeatherInfo> {
         return weatherInfo
