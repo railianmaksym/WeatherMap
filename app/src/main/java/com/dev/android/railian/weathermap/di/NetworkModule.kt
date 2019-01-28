@@ -1,6 +1,6 @@
 package com.dev.android.railian.weathermap.di
 
-import com.dev.android.railian.weathermap.data_layer.WeatherApi
+import com.dev.android.railian.weathermap.data_layer.network.WeatherApi
 import com.dev.android.railian.weathermap.util.Constants
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.readystatesoftware.chuck.ChuckInterceptor

@@ -5,15 +5,34 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
+
     <RelativeLayout
+            android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/bottom_sheet"
+                android:id="@+id/favoritesRecyclerView">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:id="@+id/emptyListLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
         <ImageView
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:id="@+id/emptyListImage"
                 android:layout_centerInParent="false"
-                app:srcCompat="@drawable/ic_empty_list" android:layout_above="@+id/emptyListText"
+                app:srcCompat="@drawable/ic_empty_list"
+                android:layout_above="@+id/emptyListText"
                 android:layout_centerHorizontal="true"/>
         <TextView
                 android:id="@+id/emptyListText"
@@ -21,8 +40,11 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Your favorite loactions list is empty:("
-                android:textAlignment="center" android:layout_marginTop="16dp" android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp" android:layout_marginBottom="16dp" android:textStyle="bold"
-                android:textSize="16sp" android:layout_centerInParent="true" android:textColor="@color/white"/>
+                android:textAlignment="center"
+                android:layout_margin="16dp"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_centerInParent="true"
+                android:textColor="@color/white"/>
     </RelativeLayout>
 </RelativeLayout>

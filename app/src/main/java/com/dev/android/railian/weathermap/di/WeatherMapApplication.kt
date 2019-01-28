@@ -7,6 +7,14 @@ class WeatherMapApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        startKoin(this, listOf(NetworkModule.instance, MapFragmentModule.instance))
+        startKoin(
+            this,
+            listOf(
+                NetworkModule.instance,
+                DatabaseModule.instance,
+                MapFragmentModule.instance,
+                FavoritesFragmentModule.instance
+            )
+        )
     }
 }

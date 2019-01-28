@@ -1,6 +1,7 @@
-package com.dev.android.railian.weathermap.data_layer
+package com.dev.android.railian.weathermap.data_layer.network
 
 import androidx.lifecycle.LiveData
+import com.dev.android.railian.weathermap.data_layer.pojo.FavoriteLocationsWeatherResponse
 import com.dev.android.railian.weathermap.data_layer.pojo.WeatherInfo
 import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
@@ -13,7 +14,7 @@ interface WeatherApi {
         @Query("lon") lon: String,
         @Query("units") units: String,
         @Query("appid") appid: String
-    ):  Deferred<WeatherInfo>
+    ): Deferred<WeatherInfo>
 
     @GET("/data/2.5/weather")
     fun getWeatherByCityNameAsync(
@@ -21,4 +22,11 @@ interface WeatherApi {
         @Query("units") units: String,
         @Query("appid") appid: String
     ): Deferred<WeatherInfo>
+
+    @GET("/data/2.5/group")
+    fun getWeatherForCeveralCitiesAsync(
+        @Query("id") cityIDs: String,
+        @Query("units") units: String,
+        @Query("appid") appid: String
+    ): Deferred<FavoriteLocationsWeatherResponse>
 }

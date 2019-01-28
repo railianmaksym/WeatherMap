@@ -21,12 +21,14 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.dev.android.railian.weathermap.R
+import com.dev.android.railian.weathermap.data_layer.pojo.Location
 import kotlinx.android.synthetic.main.fragment_map.*
 
 
 class MapFragment : Fragment(), GoogleMap.OnMapClickListener {
     private val viewModel: MapFragmentViewModel by viewModel()
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private var currentLocation: WeatherInfo? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +40,38 @@ class MapFragment : Fragment(), GoogleMap.OnMapClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bottomSheetBehavior = BottomSheetBehavior.from<LinearLayout>(bottomSheet)
+        bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(p0: View, p1: Float) {}
+
+            override fun onStateChanged(p0: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    if (viewModel.getFavoriteStatus(currentLocation?.cityId ?: 0)) {
+                        fab.setImageDrawable(resources.getDrawable(R.drawable.ic_favorite))
+                        fab.setOnClickListener {
+                            fab.setOnClickListener {
+                                viewModel.deleteSingleLocationFromFavorite(currentLocation!!.cityId)
+                            }
+                        }
+                    } else {
+                        fab.setImageDrawable(resources.getDrawable(R.drawable.ic_add_to_favorite))
+                        fab.setOnClickListener {
+                            viewModel.addLocationToFavorites(
+                                Location(
+                                    currentLocation!!.cityId,
+                                    currentLocation!!.name
+                                )
+                            )
+                        }
+                    }
+                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    fab.setImageDrawable(resources.getDrawable(R.drawable.ic_favorite))
+                    fab.setOnClickListener {
+                        findNavController().navigate(R.id.action_mapFragment_to_favoritesFragment)
+                    }
+                }
+            }
+
+        })
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync {
@@ -46,6 +80,17 @@ class MapFragment : Fragment(), GoogleMap.OnMapClickListener {
 
         viewModel.weatherInfo().observe(this, Observer {
             showWeatherBottomSheet(it)
+        })
+
+        viewModel.successAddLocationToFavorites().observe(this, Observer {
+            Toast.makeText(context, "successAddLocationToFavorites", Toast.LENGTH_SHORT).show()
+            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
+                fab.setImageDrawable(resources.getDrawable(R.drawable.ic_favorite))
+        })
+        viewModel.successDeleteLocation().observe(this, Observer {
+            Toast.makeText(context, "successDeleteLocation", Toast.LENGTH_SHORT).show()
+            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
+                fab.setImageDrawable(resources.getDrawable(R.drawable.ic_add_to_favorite))
         })
 
         fab.setOnClickListener {
@@ -58,6 +103,7 @@ class MapFragment : Fragment(), GoogleMap.OnMapClickListener {
             Toast.makeText(context, "Service Unreachable", Toast.LENGTH_SHORT)
                 .show()
         } else {
+            currentLocation = weatherInfo
             locationText.text = "${weatherInfo.name} ${weatherInfo.sys.countryCode}"
             generalWeatherText.text = weatherInfo.weather[0].description
             temperatureText.text = "${Math.round(weatherInfo.main.temp)} C"

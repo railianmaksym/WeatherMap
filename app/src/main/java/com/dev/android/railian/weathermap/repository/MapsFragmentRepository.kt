@@ -2,13 +2,19 @@ package com.dev.android.railian.weathermap.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.dev.android.railian.weathermap.data_layer.WeatherApi
+import com.dev.android.railian.weathermap.data_layer.database.FavoritesDAO
+import com.dev.android.railian.weathermap.data_layer.network.WeatherApi
+import com.dev.android.railian.weathermap.data_layer.pojo.Location
 import com.dev.android.railian.weathermap.data_layer.pojo.WeatherInfo
 import com.dev.android.railian.weathermap.util.Constants
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class MapsFragmentRepository(
-    private val weatherApi: WeatherApi
+    private val weatherApi: WeatherApi,
+    private val favoritesDAO: FavoritesDAO
 ) {
     suspend fun getWeatherByCoordinates(coordinates: LatLng): WeatherInfo {
         return weatherApi.getWeatherByCoordinatesAsync(
@@ -30,5 +36,25 @@ class MapsFragmentRepository(
         liveData.value = weatherInfo
 
         return liveData
+    }
+
+    fun addLocationToFavorites(location: Location): Job {
+        return GlobalScope.launch {
+            favoritesDAO.insert(location)
+        }
+    }
+
+    fun deleteSingleLocationFromFavorite(id: Int): Job {
+        return GlobalScope.launch {
+            favoritesDAO.deleteSingleLocationFromFavorite(id)
+        }
+    }
+
+    fun getFavoriteStatus(id: Int): Boolean {
+        var location: Location? = null
+        GlobalScope.launch {
+            location = favoritesDAO.findLocationById(id)
+        }
+        return location != null
     }
 }

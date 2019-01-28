@@ -8,7 +8,7 @@ import org.koin.dsl.module.module
 object MapFragmentModule {
     val instance = module {
         single<MapsFragmentRepository> {
-            MapsFragmentRepository(get())
+            MapsFragmentRepository(get(), get())
         }
 
         viewModel {
