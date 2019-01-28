@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.dev.android.railian.weathermap.data_layer.pojo.WeatherInfo
 import com.dev.android.railian.weathermap.util.Constants
 import com.dev.android.railian.weathermap.view_model.MapFragmentViewModel
@@ -20,12 +21,12 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.dev.android.railian.weathermap.R
+import kotlinx.android.synthetic.main.fragment_map.*
 
 
 class MapFragment : Fragment(), GoogleMap.OnMapClickListener {
     private val viewModel: MapFragmentViewModel by viewModel()
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
-    private lateinit var googleMap: GoogleMap
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,14 +38,6 @@ class MapFragment : Fragment(), GoogleMap.OnMapClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bottomSheetBehavior = BottomSheetBehavior.from<LinearLayout>(bottomSheet)
-        bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-        })
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync {
@@ -54,6 +47,10 @@ class MapFragment : Fragment(), GoogleMap.OnMapClickListener {
         viewModel.weatherInfo().observe(this, Observer {
             showWeatherBottomSheet(it)
         })
+
+        fab.setOnClickListener {
+            findNavController().navigate(R.id.action_mapFragment_to_favoritesFragment)
+        }
     }
 
     private fun showWeatherBottomSheet(weatherInfo: WeatherInfo?) {
@@ -83,7 +80,7 @@ class MapFragment : Fragment(), GoogleMap.OnMapClickListener {
         }
     }
 
-    fun setWeatherCardState(weather: WeatherInfo.Weather) {
+    private fun setWeatherCardState(weather: WeatherInfo.Weather) {
         if (weather.icon.isEmpty()) {
             weatherImage.setImageDrawable(resources.getDrawable(R.drawable.weather_none_available))
         } else {
