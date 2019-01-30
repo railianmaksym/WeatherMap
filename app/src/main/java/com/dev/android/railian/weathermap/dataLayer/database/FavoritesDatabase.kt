@@ -1,10 +1,10 @@
-package com.dev.android.railian.weathermap.data_layer.database
+package com.dev.android.railian.weathermap.dataLayer.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.dev.android.railian.weathermap.data_layer.pojo.Location
+import com.dev.android.railian.weathermap.dataLayer.pojo.Location
 
 @Database(entities = [Location::class], version = 1)
 abstract class FavoritesDatabase : RoomDatabase() {

@@ -1,13 +1,13 @@
 package com.dev.android.railian.weathermap.view_model
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dev.android.railian.weathermap.data_layer.network.WeatherApi
-import com.dev.android.railian.weathermap.data_layer.pojo.Location
-import com.dev.android.railian.weathermap.data_layer.pojo.WeatherInfo
+import com.dev.android.railian.weathermap.dataLayer.pojo.Location
+import com.dev.android.railian.weathermap.dataLayer.pojo.WeatherInfo
 import com.dev.android.railian.weathermap.repository.FavoritesRepository
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class FavoritesFragmentViewModel(
     private val favoritesRepository: FavoritesRepository

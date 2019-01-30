@@ -3,8 +3,8 @@ package com.dev.android.railian.weathermap.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dev.android.railian.weathermap.data_layer.pojo.Location
-import com.dev.android.railian.weathermap.data_layer.pojo.WeatherInfo
+import com.dev.android.railian.weathermap.dataLayer.pojo.Location
+import com.dev.android.railian.weathermap.dataLayer.pojo.WeatherInfo
 import com.dev.android.railian.weathermap.repository.MapsFragmentRepository
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +15,7 @@ class MapFragmentViewModel(private val repository: MapsFragmentRepository) : Vie
     private val weatherInfo: MutableLiveData<WeatherInfo> = MutableLiveData()
     private val successAddLocationToFavorites: MutableLiveData<Boolean> = MutableLiveData()
     private val successDeleteLocation: MutableLiveData<Boolean> = MutableLiveData()
+    private val error: MutableLiveData<String> = MutableLiveData()
 
     fun getWeatherByCoordinates(coordinates: LatLng) {
         GlobalScope.launch(Dispatchers.Main) {
@@ -50,10 +51,15 @@ class MapFragmentViewModel(private val repository: MapsFragmentRepository) : Vie
         return repository.getFavoriteStatus(id)
     }
 
-    fun successAddLocationToFavorites():MutableLiveData<Boolean>{
+    fun successAddLocationToFavorites(): MutableLiveData<Boolean> {
         return successAddLocationToFavorites
     }
-    fun successDeleteLocation():MutableLiveData<Boolean>{
+
+    fun successDeleteLocation(): MutableLiveData<Boolean> {
         return successDeleteLocation
+    }
+
+    fun error(): MutableLiveData<String> {
+        return error
     }
 }

@@ -1,10 +1,9 @@
 package com.dev.android.railian.weathermap.repository
 
-import com.dev.android.railian.weathermap.data_layer.database.FavoritesDAO
-import com.dev.android.railian.weathermap.data_layer.network.WeatherApi
-import com.dev.android.railian.weathermap.data_layer.pojo.FavoriteLocationsWeatherResponse
-import com.dev.android.railian.weathermap.data_layer.pojo.Location
-import com.dev.android.railian.weathermap.data_layer.pojo.WeatherInfo
+import com.dev.android.railian.weathermap.dataLayer.database.FavoritesDAO
+import com.dev.android.railian.weathermap.dataLayer.network.WeatherApi
+import com.dev.android.railian.weathermap.dataLayer.pojo.Location
+import com.dev.android.railian.weathermap.dataLayer.pojo.WeatherInfo
 import com.dev.android.railian.weathermap.util.Constants
 import kotlinx.coroutines.*
 

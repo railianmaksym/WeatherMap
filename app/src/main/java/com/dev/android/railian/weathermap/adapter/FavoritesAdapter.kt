@@ -1,6 +1,5 @@
 package com.dev.android.railian.weathermap.adapter
 
-import android.content.DialogInterface
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.dev.android.railian.weathermap.R
-import com.dev.android.railian.weathermap.data_layer.pojo.WeatherInfo
+import com.dev.android.railian.weathermap.dataLayer.pojo.WeatherInfo
 import com.dev.android.railian.weathermap.util.Constants
 import com.dev.android.railian.weathermap.view.FavoritesView
 import kotlinx.android.extensions.LayoutContainer

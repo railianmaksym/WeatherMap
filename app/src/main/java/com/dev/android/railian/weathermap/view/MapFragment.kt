@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.dev.android.railian.weathermap.data_layer.pojo.WeatherInfo
+import com.dev.android.railian.weathermap.dataLayer.pojo.WeatherInfo
 import com.dev.android.railian.weathermap.util.Constants
 import com.dev.android.railian.weathermap.view_model.MapFragmentViewModel
 import com.google.android.gms.maps.GoogleMap
@@ -21,7 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.dev.android.railian.weathermap.R
-import com.dev.android.railian.weathermap.data_layer.pojo.Location
+import com.dev.android.railian.weathermap.dataLayer.pojo.Location
 import kotlinx.android.synthetic.main.fragment_map.*
 
 
@@ -91,6 +91,10 @@ class MapFragment : Fragment(), GoogleMap.OnMapClickListener {
             Toast.makeText(context, "successDeleteLocation", Toast.LENGTH_SHORT).show()
             if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
                 fab.setImageDrawable(resources.getDrawable(R.drawable.ic_add_to_favorite))
+        })
+
+        viewModel.error().observe(this, Observer {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         })
 
         fab.setOnClickListener {

@@ -1,4 +1,4 @@
-package com.dev.android.railian.weathermap.data_layer.pojo
+package com.dev.android.railian.weathermap.dataLayer.pojo
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,8 +1,7 @@
-package com.dev.android.railian.weathermap.data_layer.network
+package com.dev.android.railian.weathermap.dataLayer.network
 
-import androidx.lifecycle.LiveData
-import com.dev.android.railian.weathermap.data_layer.pojo.FavoriteLocationsWeatherResponse
-import com.dev.android.railian.weathermap.data_layer.pojo.WeatherInfo
+import com.dev.android.railian.weathermap.dataLayer.pojo.FavoriteLocationsWeatherResponse
+import com.dev.android.railian.weathermap.dataLayer.pojo.WeatherInfo
 import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Query

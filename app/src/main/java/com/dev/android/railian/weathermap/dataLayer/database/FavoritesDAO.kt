@@ -1,10 +1,10 @@
-package com.dev.android.railian.weathermap.data_layer.database
+package com.dev.android.railian.weathermap.dataLayer.database
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.dev.android.railian.weathermap.data_layer.pojo.Location
+import com.dev.android.railian.weathermap.dataLayer.pojo.Location
 
 @Dao
 interface FavoritesDAO {
